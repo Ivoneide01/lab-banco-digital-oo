@@ -13,22 +13,55 @@ public abstract class Conta implements IConta {
 		this.agencia = Conta.AGENCIA_PADRAO;
 		this.numero = SEQUENCIAL++;
 		this.cliente = cliente;
+		this.saldo = 0.0; // Inicializa o saldo com zero
 	}
 
 	@Override
 	public void sacar(double valor) {
 		saldo -= valor;
+
+		if (valor <= 0) {
+            System.out.println("Erro: Valor de saque inválido.");
+            return;
+        }
+        if (valor > saldo) {
+            System.out.println("Erro: Saldo insuficiente.");
+            return;
+        }
+        this.saldo -= valor;
+        System.out.println("Saque de " + valor + " realizado com sucesso. Novo saldo: " + this.saldo);
 	}
 
 	@Override
 	public void depositar(double valor) {
 		saldo += valor;
+
+		if (valor <= 0) {
+            System.out.println("Erro: Valor de depósito inválido.");
+            return;
+        }
+        this.saldo += valor;
+        System.out.println("Depósito de " + valor + " realizado com sucesso. Novo saldo: " + this.saldo);
 	}
 
 	@Override
 	public void transferir(double valor, IConta contaDestino) {
 		this.sacar(valor);
+		// Deposita o valor na conta de destino
 		contaDestino.depositar(valor);
+
+
+		// Verifica se o valor é válido
+		if (valor <= 0) {
+			System.out.println("Erro: Valor de transferência inválido.");
+			return;
+		}
+		
+		System.out.println("Transferência de " + valor + " para conta destino realizada com sucesso.");
+		System.out.println("Novo saldo na conta de origem: " + this.getSaldo());
+
+		contaDestino.depositar(valor);
+
 	}
 
 	public int getAgencia() {
